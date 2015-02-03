@@ -1,0 +1,25 @@
+######   Parameters of the model   ######
+## model : c1, c2, ld
+#   d=.2            d=1                          d=1 3D
+# c1 = .893383	  c1 = .446390 -> 1	       c1 = 1
+# c2 = .694589	  c2 = .186767 -> .41839       c2 = .59669
+# ld = .200000	  ld = 1.00000 -> 2.2402       ld = 3.19453
+1	
+.59669	
+3.19453 
+## domain : Lx , dx
+10
+0.05 
+## Time , dt
+2
+0.02
+## Bound_cond (1:periodic, 2:Neumann homogenous)
+2
+######  Computation  ######
+## method_num (1:splitting, 2:conservative, 3:semi-conservative, 4:upwind)
+1
+# if splitting method: Degree (order for the polynomial scheme), epsilon
+3
+0
+## shouldSaveAll
+T

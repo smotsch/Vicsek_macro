@@ -1,0 +1,40 @@
+######  Initial condition for the Macroscopic Vicsek model 1D ######
+## ChoiceInit ##
+2
+##------------##
+## 1) Random: meanRho meanTheta rangeRho rangeTheta ##
+##--------------------------------------------------##
+1
+0
+.5
+1
+## 2) Riemann pbm: (rhoL,thetaL) (rhoR,thetaR) ##
+##---------------------------------------------##
+1
+.314
+2
+1.54
+##------      3) Blocks       ------##
+##----------------------------------##
+# the background: rhoBG thetaBG 
+.2
+1.5
+## 31) one block: rho1, theta1, x1Center, radius1
+1
+0
+5
+2
+## 32) second block: rho2, theta2, x2Center, radius2
+2
+3.14
+15
+1.6
+## 33) third block: rho3, theta3, x3Center, radius3
+2.2
+.2
+0
+1
+## 4) Predefined ##
+##---------------##
+record_rho
+record_theta
