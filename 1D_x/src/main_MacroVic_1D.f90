@@ -35,7 +35,7 @@ program MacroVic_1D
   !- let's count the time it takes -!
   Call Cpu_time(start)
   
-  !---------------- Lecture des paramètres -------------------!
+  !-------------------  Read parameters  ---------------------!
   Call Lecture_1D(P,Pinit)
   
   !------------------- initialisation ------------------------!
@@ -77,10 +77,10 @@ program MacroVic_1D
   !-------- initial condition --------!
   Call InitCond_1D(rho,theta,P,Pinit)
 
-  !- on applique les conditions aux bords aux densités
+  !- apply boundary conditions
   Call BoundaryCondition_1D(rho,P%boundCond)
   Call BoundaryCondition_1D(theta,P%boundCond)
-  !--- écriture sortie ---!
+  !--- write initial condition ---!
   Call FilePrint_1D(rho,theta,0) ! au temps 0
   
   !- for others methods
@@ -104,11 +104,11 @@ program MacroVic_1D
   
   Do iTime=1,nTime
 
-     !--    1) Flux (calcul des valeurs aux interfaces)   --!
+     !--      1) Flux (at the interface i+1/2             --!
      !------------------------------------------------------!
      select case (P%methodNum)
      case(1)
-        !- FluxSplit* pour la méthode splitting
+        !- FluxSplit* (splitting method)
         Do i = 2,nSpace
            !- at i-1/2
            Ftemp3 = FluxSplit_x( &
@@ -119,7 +119,7 @@ program MacroVic_1D
            FluxSplitV(i)   = Ftemp3(3)
         end Do
      case(2)
-        !- FluxCons* pour la méthode conservative
+        !- FluxCons* (conservative method)
         Do i = 2,nSpace
            !- at i-1/2
            Ftemp2 = FluxCons_x( &
@@ -129,7 +129,7 @@ program MacroVic_1D
            FluxConsTheta(i) = Ftemp2(2)
         end Do
      case(3)
-        !- FluxSemiRho pour la méthode semi-conservative
+        !- FluxSemiRho (semi-conservative method)
         Do i = 2,nSpace
            !- at i-1/2
            FluxSemiRho(i) = FluxSemi_x(rho(i-1),rho(i),theta(i-1),theta(i),P%c1,P%c2,P%ld)
@@ -151,8 +151,8 @@ program MacroVic_1D
      End If
      
 
-     !--     2) New value (on avance d'un pas de temps pho et theta)  -!
-     !-----------------------------------------------------------------!
+     !--       2) New value (update in time)               -!
+     !------------------------------------------------------!
      Do i = 2,(nSpace-1)
 
         select case (P%methodNum)
@@ -203,8 +203,8 @@ program MacroVic_1D
         
      end Do
      
-     !--      3) Boundary condition      --!
-     !-------------------------------------!
+     !--          3) Boundary condition                              --!
+     !-----------------------------------------------------------------!
 
      Call BoundaryCondition_1D(rho,P%boundCond)
      select case (P%methodNum)
@@ -219,8 +219,8 @@ program MacroVic_1D
      end select
 
      
-     !--      4) Output (print)      --!
-     !---------------------------------!
+     !--         4) Output (print)                                   --!
+     !-----------------------------------------------------------------!
 
      if (P%shouldSaveAll .or. iTime==nTime) Then
         !-- pour shouldSaveAll=false, on garde que le 1er et dernier plot
@@ -242,9 +242,9 @@ program MacroVic_1D
      
   end Do
 
-  !---------------------------------------------------------------!
-  !----------------------- end loop in time ----------------------!
-  !---------------------------------------------------------------!
+  !-----------------------------------------------------------------!
+  !------------------------ end loop in time -----------------------!
+  !-----------------------------------------------------------------!
 
   
   !- finishing line...

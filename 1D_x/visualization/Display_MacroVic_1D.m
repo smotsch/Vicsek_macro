@@ -6,7 +6,7 @@
 
 %%-- Parameters display
 choicePlot = 1;			% 1: ρ,u, 2: ρ,θ, 3: ρ,u,v
-jumpTime   = 1;
+jumpTime   = -1;
 shouldSave = 0;
 %% parameters color
 yMin = -.5;

@@ -72,5 +72,5 @@ clean:
 ##----------------------------------------##
 # 1. CC = ifort
 # 2. FLAGS = -assume bscc -msse2 -O2
-# 3. $(OBJECTS): %.f90
+# 3. %.o: %.f90
 #	$(CC) -c $< -o $(OBJDIR)/$@ -module $(OBJDIR)
