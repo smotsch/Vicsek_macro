@@ -223,7 +223,7 @@ program MacroVic_1D
      !-----------------------------------------------------------------!
 
      if (P%shouldSaveAll .or. iTime==nTime) Then
-        !-- pour shouldSaveAll=false, on garde que le 1er et dernier plot
+        !-- if shouldSaveAll=false, we only keep the first and last plot
         select case (P%methodNum)
         case(1)
            Call FilePrint_1D(rho,AngleVec_N(u,v),iTime)
