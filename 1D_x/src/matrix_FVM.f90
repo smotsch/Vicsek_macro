@@ -108,18 +108,6 @@ contains
     !-- the mix matrix A^+
     Abs_A_roe = matmul(transpose(P_inv),matmul(abs_D_roe,transpose(P)))       
 
-  contains
-    function EntropyFixHartenHyman(ld_l,ld_m,ld_r)
-      implicit none
-      Double precision, intent(in)     :: ld_l,ld_m,ld_r
-      Double precision                 :: EntropyFixHartenHyman
-      Double precision                 :: beta
-      !- init
-      beta = (ld_r - ld_m)/(ld_r-ld_l)
-      !- the value
-      EntropyFixHartenHyman = (1-beta)*ld_r - beta*ld_l
-    end function EntropyFixHartenHyman
-
   end function Abs_A_roe
 
   function Abs_A_roe_Poly(rho_l,rho_r,u_l,u_r,v_l,v_r,c1,c2,ld,degree)
@@ -293,6 +281,114 @@ contains
     Double Precision, Dimension(2,2)           :: A_minus
     A_minus = 1d0/2*( Matrix_A(rho,theta,c1,c2,ld) - Abs_A(rho,theta,c1,c2,ld) )
   end function A_minus
+
+
+
+
+
+  function Abs_A_roe_bidon(rho_l,rho_r,u_l,u_r,v_l,v_r, c1,c2,ld)
+    !- absolute value of the Roe matrix
+    ! bidon: l'entropie fix est trop petit
+    implicit none
+    Double Precision, intent(in)               :: rho_l,rho_r,u_l,u_r,v_l,v_r
+    Double Precision, intent(in)               :: c1,c2,ld
+    Double precision                           :: u_m,v_m
+    Double precision                           :: z1, z3, det_P_inv
+    Double Precision, Dimension(3,3)           :: P, P_inv, abs_D_roe
+    Double Precision, Dimension(3,3)           :: Abs_A_roe_bidon
+    !- entropy fix
+    Double Precision, Dimension(3,1)           :: alpha,beta,q_r_1,q_r_2
+    Double Precision, Dimension(3)             :: vp_m,vp_temp
+    Double precision                           :: vp1,vp2,vp3
+    Double precision                           :: vp1_l,vp2_l,vp3_l
+    Double precision                           :: vp1_r,vp2_r,vp3_r
+    Double precision                           :: vp1_fix,vp2_fix,vp3_fix
+    !--- (u,v) at the middle
+    u_m   = (sqrt(rho_l)*u_l + sqrt(rho_r)*u_r)/(sqrt(rho_l) + sqrt(rho_r))
+    v_m   = (sqrt(rho_l)*v_l + sqrt(rho_r)*v_r)/(sqrt(rho_l) + sqrt(rho_r))
+    !--- eigenvalues (vp)
+    vp_m = ValeurPropreSplit_x(u_m,c1,c2,ld)
+    vp1  = vp_m(1); vp2 = vp_m(2); vp3 = vp_m(3);
+    !-- eigenvectors [V_1,V_2,V_3]
+    z1 = (c1*c2*u_m*v_m-c2*v_m*vp1)/(c2*u_m-vp1)
+    z3 = (c1*c2*u_m*v_m-c2*v_m*vp3)/(c2*u_m-vp3)
+    P_inv = reshape( (/ &
+         c1  , 0d0 , c1  , &
+         vp1 , 0d0 , vp3 , &
+         z1  , 1d0 , z3 /) , (/3,3/) )
+    det_P_inv = c1*(-vp3 + vp1)
+    P = 1/det_P_inv*reshape( (/ &
+         -vp3  , c1 , 0d0 , &
+         -(vp1*z3-vp3*z1) , c1*(z3-z1) , -c1*(vp3-vp1), &
+         vp1   , -c1 , 0d0 /) , (/3,3/) )
+    !- α,β coordinates of U_l,U_r in V_1,V_2,V_3
+    alpha = matmul(P,reshape( (/rho_l, rho_l*u_l, rho_l*v_l/),(/3,1/)))
+    beta  = matmul(P,reshape( (/rho_r, rho_r*u_r, rho_r*v_r/),(/3,1/)))
+    !- q_r_1 (=q_l_2), q_r_2 (=q_l_3)
+    q_r_1 = matmul(P_inv,reshape( (/beta(1,1),alpha(2,1),alpha(3,1) /),(/3,1/)))
+    q_r_2 = matmul(P_inv,reshape( (/beta(1,1),beta(2,1) ,alpha(3,1) /),(/3,1/)))
+    !-------------    
+    !- entropy-fix
+    !-------------
+    ! Change the value of the eigenvalues of |A| in the case of
+    ! a sonic rarefaction
+    !  We increase the eigenvalue (when it is needed, i.e. λ_l<0<λ_r)
+    ! according to the following rule (Harten–Hyman Entropy Fix):
+    !   The value of
+    !      λ_m = (1-β)λ_r  +  βλ_l
+    !   with β = (λ_r-λ_m)/(λ_r-λ_l) is changed to:
+    !     λ_m~ = (1-β)λ_r -  βλ_l
+    ! 
+    ! vp1
+    vp_temp = ValeurPropreSplit_x(u_l,c1,c2,ld)
+    vp1_l   = vp_temp(1)
+    vp_temp = ValeurPropreSplit_x(q_r_1(2,1)/q_r_1(1,1),c1,c2,ld)
+    vp1_r   = vp_temp(1)
+    ! vp2 (q_l_2=q_r_1)
+    vp2_l   = vp_temp(2)
+    vp_temp = ValeurPropreSplit_x(q_r_2(2,1)/q_r_2(1,1),c1,c2,ld)
+    vp2_r   = vp_temp(2)
+    ! vp3 (q_l_3=q_r_2)
+    vp3_l   = vp_temp(3)
+    vp_temp = ValeurPropreSplit_x(u_r,c1,c2,ld)
+    vp3_r   = vp_temp(3)
+    !- change the eigenvalues if needed for the entropy fix
+    !- eigenvalues middle
+    vp1_fix = vp_m(1); vp2_fix = vp_m(2); vp3_fix = vp_m(3)
+    if (vp1_l*vp1_r<0) then
+       vp1_fix = EntropyFixHartenHyman(vp1_l,vp_m(1),vp1_r)
+       !-vp1_fix = max(-vp1_l,vp1_r) ! Méthode bourine
+    endif
+    if (vp2_l*vp2_r<0) then
+       vp2_fix = EntropyFixHartenHyman(vp2_l,vp_m(2),vp2_r)
+       !-vp2_fix = max(-vp2_l,vp2_r) ! Méthode bourine
+    endif
+    if (vp3_l*vp3_r<0) then
+       vp3_fix = EntropyFixHartenHyman(vp3_l,vp_m(3),vp3_r)
+       !-vp3_fix = max(-vp3_l,vp3_r) ! Méthode bourine
+    endif
+    ! the absolute value of D
+    abs_D_roe = reshape( (/ &
+         abs(vp1_fix)  , 0d0  , 0d0, &
+         & 0d0  , abs(vp2_fix) , 0d0, &
+         & 0d0  , 0d0  , abs(vp3_fix) /) , (/3,3/) )
+    !-- the mix matrix A^+
+    Abs_A_roe_bidon = matmul(transpose(P_inv),matmul(abs_D_roe,transpose(P)))       
+
+  contains
+    function EntropyFixHartenHyman(ld_l,ld_m,ld_r)
+      implicit none
+      Double precision, intent(in)     :: ld_l,ld_m,ld_r
+      Double precision                 :: EntropyFixHartenHyman
+      Double precision                 :: beta
+      !- init
+      beta = (ld_r - ld_m)/(ld_r-ld_l)
+      !- the value
+      EntropyFixHartenHyman = (1-beta)*ld_r - beta*ld_l
+    end function EntropyFixHartenHyman
+
+  end function Abs_A_roe_bidon
+
 
   
 end module matrix_FVM

@@ -6,11 +6,11 @@
 
 %%-- Parameters display
 choicePlot = 2;			% 1: ρ,u, 2: ρ,θ, 3: ρ,u,v
-jumpTime   = -1;
+jumpTime   = 5;
 shouldSave = 0;
 %% parameters color
-yMin = 0;
-yMax = 3;
+yMin = -1.2;
+yMax = 2;
 
 
 %%------------------ 0.1) Read parameters ------------------%%
@@ -136,8 +136,8 @@ endif
 break
 
 ## save
-intXmv = xx;
-rhoMV_T4   = rho;
-thetaMV_T4 = theta;
+intX  = xx;
+rho   = rho;
+theta = theta;
 
-save solDC_T4_macro.mat intXmv rhoMV_T4 thetaMV_T4
+save -mat-binary solution_fig59.mat intX rho theta

@@ -105,6 +105,7 @@ contains
     !- the function
     !- the matrix abs_A_roe
     mat_abs_A_roe = Abs_A_roe_Poly(rho_l,rho_r,u_l,u_r,v_l,v_r,c1,c2,ld,degree)
+    !mat_abs_A_roe = Abs_A_roe_bidon(rho_l,rho_r,u_l,u_r,v_l,v_r,c1,c2,ld)
     !- the value
     Temp = 1/2d0*reshape( (/ &
          c1*rho_l*u_l + c1*rho_r*u_r , &
