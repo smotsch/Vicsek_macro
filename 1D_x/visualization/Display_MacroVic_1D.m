@@ -5,12 +5,12 @@
 %%
 
 %%-- Parameters display
-choicePlot = 1;			% 1: ρ,u, 2: ρ,θ, 3: ρ,u,v
+choicePlot = 2;			% 1: ρ,u, 2: ρ,θ, 3: ρ,u,v
 jumpTime   = -1;
 shouldSave = 0;
 %% parameters color
-yMin = -.5;
-yMax = 2.5;
+yMin = 0;
+yMax = 3;
 
 
 %%------------------ 0.1) Read parameters ------------------%%
@@ -44,7 +44,7 @@ xx  = dx*(0:n_x);
 %% graphic
 if (shouldSave==1)
   figure("visible","off")
-  system("rm -rf ../images/*")
+  system("rm -rf images/*")
 else
   figure("visible","on")
 endif
@@ -104,7 +104,7 @@ for iTime=0:jumpTime:nTime
 
   %% save in a png file
   if shouldSave==1
-    l = ["../images/rhoTheta_",num2str(iTime,"%09d"),".png"];
+    l = ["images/rhoTheta_",num2str(iTime,"%09d"),".png"];
     print(sprintf(l));
   endif
 
@@ -124,9 +124,9 @@ if (shouldSave==1)
 	       num2str(timeNow(3),"%02d"),"_",...
 	       num2str(timeNow(4),"%02d"),"h",...
 	       num2str(timeNow(5),"%02d")];
-  name = ["../videos/MacroVic_1D_",extension,".avi"];
+  name = ["videos/MacroVic_1D_",extension,".avi"];
   ## the command  
-  system(["mencoder ''mf://../images/rhoTheta_*.png'' -mf fps=",...
+  system(["mencoder ''mf://images/rhoTheta_*.png'' -mf fps=",...
 	  num2str( floor(1/dt/jumpTime) )," -o ",name," -ovc lavc -lavcopts vcodec=mpeg4"]);
 else
   pause
