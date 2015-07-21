@@ -20,11 +20,9 @@ contains
     Double Precision                        :: vp1_x,vp2_x, discri, cfl
     Double Precision, PARAMETER             :: PI = 3.14159265358979323846
     
-
-    !-  Parameters de la simulation  !
-    !--------------------------------!
+    !-----  Read Parameters simulation
+    !---------------------------------
     open(unit=15,file='PARAMETER_1D.txt',status='old')
-
     Do i=1,6
        read(15,*)temp
     End Do
@@ -47,7 +45,6 @@ contains
     read(15,*)P%epsilon
     read(15,*)temp
     read(15,*)P%shouldSaveAll
-    
     close(unit=15)
 
     P%nSpace = floor(P%Lx/P%dx+.5d0) + 1
@@ -66,11 +63,9 @@ contains
        cfl = P%dt/P%dx*(P%c2 + sqrt(discri))
     endif
 
-
-    !-  Parameters pour la condition initiale  !
-    !------------------------------------------!
+    !-----  Parameters for Initial Condition
+    !---------------------------------------
     open(unit=16,file='PARAMETER_init.txt',status='old')
-
     read(16,*)temp
     read(16,*)temp
     read(16,*)Pinit%choiceInit
@@ -115,13 +110,10 @@ contains
     read(16,*)temp
     read(16,*)Pinit%cheminRho
     read(16,*)Pinit%cheminTheta
-    
     close(unit=16)
 
-
-
-    !-----  Information on the terminal  -----!
-    !-----------------------------------------!
+    !--  Information on the terminal
+    !-------------------------------
     print *,"******************************************************"
     print *,"***********  Parameters of the simulation  ***********"
     print *,"******************************************************"
@@ -167,13 +159,12 @@ contains
     end if
     print *,""
     
-    
   end subroutine Lecture_1D
 
 
-  
-  !###################  print  ###################!
-  !###############################################!
+  !-----------------------------------------------------------------------!
+  !---------------------            Print            ---------------------!
+  !-----------------------------------------------------------------------!
 
   Subroutine FilePrint_1D(rho,theta,numberIter)
     !- to write data
@@ -192,10 +183,8 @@ contains
     write(11) theta
     close(10)
     close(11)
-
   end Subroutine FilePrint_1D
  
-  
   Subroutine FilePrint_1D_relax(rho,u,v,numberIter)
     !- to write data for the relax splitting method
     implicit none
@@ -216,15 +205,12 @@ contains
     close(10)
     close(11)
     close(12)
-
   end Subroutine FilePrint_1D_relax
 
   
-
-  
-  !###################  progress bar  ###################!
-  !######################################################!
-
+  !-----------------------------------------------------------------------!
+  !----------------             Progress bar              ----------------!
+  !-----------------------------------------------------------------------!
 
   Subroutine BarProgress(i,imax)
     implicit none

@@ -6,11 +6,11 @@
 
 %%-- Parameters display
 choicePlot = 2;			% 1: ρ,u, 2: ρ,θ, 3: ρ,u,v
-jumpTime   = 5;
+jumpTime   = 1;
 shouldSave = 0;
 %% parameters color
-yMin = -1.2;
-yMax = 2;
+yMin = -.2;
+yMax = 2.5;
 
 
 %%------------------ 0.1) Read parameters ------------------%%
@@ -128,8 +128,6 @@ if (shouldSave==1)
   ## the command  
   system(["mencoder ''mf://images/rhoTheta_*.png'' -mf fps=",...
 	  num2str( floor(1/dt/jumpTime) )," -o ",name," -ovc lavc -lavcopts vcodec=mpeg4"]);
-else
-  pause
 endif
 
 

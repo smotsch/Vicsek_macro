@@ -26,12 +26,10 @@ program MacroVic_1D
   Double Precision, Dimension(2)     :: Utemp2, Ftemp2, Omega
   Double Precision, Dimension(3)     :: Utemp3, Ftemp3
   Double Precision                   :: thetaAbs, dtDivDx, C_0, f1temp
-  !- time to execut the code
+  !- time to execute the code
   real                               :: start, finish
   Double Precision, PARAMETER        :: PI = 3.14159265358979323846
 
-
-  
   !- let's count the time it takes -!
   Call Cpu_time(start)
   
@@ -135,7 +133,6 @@ program MacroVic_1D
            FluxSemiRho(i) = FluxSemi_x(rho(i-1),rho(i),theta(i-1),theta(i),P%c1,P%c2,P%ld)
         end Do        
      end select
-
      
      !--    1bis) Upwind     --!
      !-------------------------!
@@ -149,12 +146,10 @@ program MacroVic_1D
            thetaUpwind(i) = Utemp2(2)
         end Do
      End If
-     
 
      !--       2) New value (update in time)               -!
      !------------------------------------------------------!
      Do i = 2,(nSpace-1)
-
         select case (P%methodNum)
         case(1)
            !-----  splitting  -----!
@@ -198,14 +193,11 @@ program MacroVic_1D
            !-----  upwind  -----!
            rho(i)   = rhoUpwind(i)
            theta(i) = thetaUpwind(i)
-
         end select
-        
      end Do
      
      !--          3) Boundary condition                              --!
      !-----------------------------------------------------------------!
-
      Call BoundaryCondition_1D(rho,P%boundCond)
      select case (P%methodNum)
      case(1)
@@ -217,11 +209,9 @@ program MacroVic_1D
      case(3,4)
         Call BoundaryCondition_1D(theta,P%boundCond)
      end select
-
      
      !--         4) Output (print)                                   --!
      !-----------------------------------------------------------------!
-
      if (P%shouldSaveAll .or. iTime==nTime) Then
         !-- if shouldSaveAll=false, we only keep the first and last plot
         select case (P%methodNum)
