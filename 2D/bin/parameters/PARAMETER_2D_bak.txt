@@ -1,0 +1,28 @@
+######   Parameters of the model   ######
+## model : c1, c2, c3
+#   d=.2            d=1
+# c1 = .893383    c1 = .446390
+# c2 = .694589    c2 = .186767
+# c3 = .200000    c3 = 1.00000
+0.893383
+0.694589
+0.200000
+## domain : Lx,Ly, dx,dy
+12
+10
+.25
+.25
+## Time , dt
+100
+.2
+## boundCondX boundCondY (1:periodic, 2:Neumann homogenous, 3:vortex)
+1
+2
+######  Parameters numerical scheme  ######
+## conservation law: degree polynomial scheme (≥3 then exact)
+3
+## relaxation: η
+0
+## shouldSaveAll, VTK or Octave
+T
+F
