@@ -1,35 +1,35 @@
-README file for MacroVic_1D (Seb, 02/02/2015)
-=============================================
-       
-Installation
-------------
+Program *MacroVic_2D*
+=======================
+
+
+## Installation
 
 Execute the `makefile`:
 ```bash
 	> make
 ```
-The compiler creates the executable file `./MicroBGK` and move it to the
-directory `bin`. By default, the makefile uses the **gfortran** compiler. If
-you want to use **ifort**, open the `makefile` and use the instruction written
-at the bottom. 
+The compiler creates the executable file `./MacroVic_2D` and move it to the
+directory `bin`. By default, the makefile uses the *gfortran* compiler. If you
+want to use *ifort*, open the `makefile` and use the instruction written at the
+bottom.
 
-Program execution
------------------
+## Program execution
 
 To execute the program, run the binary file:
 ```bash
-	> ./MacroVic_1D
+	> ./MacroVic_2D
 ```
 The program is going to read the parameters of the model in the files:
-* `PARAMETER_1D.txt`: for most of the parameters (number of particles, their speed...)
+* `PARAMETER_MacroVic_2D.txt`: for most of the parameters
 * `PARAMETER_init.txt`: for the initial condition (uniform, Gaussian...)
 
 The parameters are written in external files because we do not need to recompile
-when we change one parameter by doing so. The problem with this method is that we
-have to write the value of the parameters at a given line. We cannot add a
-comment line in the file `PARAMETER_1D.txt`, otherwise the numbering is ruined.
+when we change one parameter by doing so. The problem with this method is that
+we have to write the value of the parameters at a given line. We cannot add a
+comment line in the file `PARAMETER_MacroVic_2D.txt`, otherwise the numbering is
+ruined.
 
-During the execution, the program `MacroVic_1D` is going to compute the density
+During the execution, the program `MacroVic_2D` is going to compute the density
 `ρ` and average velocity (`θ`) of the particles at each time step using the
 algorithm describing in the article [1]. In the terminal, the program gives some
 information about the parameters used for the simulation. At the end, it
@@ -41,36 +41,36 @@ hyperbolic system with geometric constraints describing swarming behavior"* (201
 
 Output
 ------
-The program `MacroVic_1D` can store two types of data. First, it can save the
+The program `MacroVic_2D` can store two types of data. First, it can save the
 trajectories and the velocities of each particle over time. At each time step,
 it creates in the directory `data` the files:
 * `rho_******`     : density 
 * `theta_******`   : direction of mean velocity
 
 with `******` a counter of time step. The program writes only if the parameter
-`shouldSaveAll` is `True` (line 25 in `PARAMETER_1D.txt`).
+`shouldSaveAll` is `True` (line 27 in `PARAMETER_2D.txt`).
 
 
 Visual output
 -------------
 To display the results of the computations with **Octave**
 ```bash
-	> Display_MacroVic_1D.m
+	> Display_HydroVic_2D.m
 ```
-in the folder `visualization`. For **Matlab**, the script is called
-`Display_MacroVic_1D_Matlab.m`.
+in the folder `visualization`.
 
 The parameters
 --------------
-* `PARAMETER_1D.txt`
+* `PARAMETER_2D.txt`
  * `c1`, `c2`, `ld`    : coefficients of the macroscopic model
- * `Lx`, `dx`	   : size of the domain in x and meshgrid
+ * `Lx`, `Ly`	   : size of the domain in x and y
+ * `dx`, `dy`	   : meshgrid in x an dy
  * `Time`, `dt`	   : total time and Δt
- * `boundCond`	   : boundary condition (periodic or Neumann)
- * `methodNum`	   : 4 choices of numerical methods, degree is
+ * `boundCond*`	   : boundary condition (periodic or Neumann)
  * `degree`        : order for the polynomial upwind (0,1,2) in estimating |DF| (`degree=3` means no approximation)
  * `epsilon`       : in the splitting method, source term is in 1/ε (`ε=0` leads to a normalization operator)
  * `shouldSaveAll` : save all the data in time
+ * `isFormatVtk`   : save in VTK format or Octave
 * `PARAMETER_init.txt`
  * `choiceInit`     : choice for the initial condition for `X`
  * `meanRho`,`meanTheta`,`rangeRho`,`rangeTheta`: random values in `x`
@@ -84,15 +84,15 @@ The main program is the file `MacroVic_1D.f90`. It uses different modules
 | File                         | Description   |
 | -----------------------------|:-------------:|
 | `elementary`           | contains the usual functions (AngleVec, RandNorm...) |
-| `input_output_1D`      | for the input/output (Lecture, FilePrint...)         |
-| `boundary_1D`          | the effect of the wall (Wall)                        |
-| `initial_condition_1D` | to initialize with the proper initial conditions (InitCond)|
+| `input_output_2D`      | for the input/output (Lecture, FilePrint...)         |
+| `boundary_2D`          | the effect of the wall (Wall)                        |
+| `initial_condition_2D` | to initialize with the proper initial conditions (InitCond)|
 | `matrix_FVM/flux_FVM`  | compute the flux at the interface between cells      |
 
 The architecture of the program is the following:
 ```bash
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %%    main_MacroVic_1D                                                 %%
+  %%    main_MacroVic_2D                                                 %%
   %%      -> declaration of variables                                    %%
   %%      -> lecture of parameters ("Lecture")                           %%
   %%      -> initialization of variables ("InitCond")                    %%

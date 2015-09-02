@@ -49,7 +49,7 @@ contains
     !--------------------------------!
     open(unit=15,file='PARAMETER_2D.txt',status='old')
 
-    Do i=1,6
+    Do i=1,4
        read(15,*)temp
     End Do
     read(15,*)P%c1
@@ -64,12 +64,12 @@ contains
     read(15,*)P%Time
     read(15,*)P%dt
     read(15,*)temp
+    read(15,*)temp
     read(15,*)P%boundCondX
     read(15,*)P%boundCondY
     read(15,*)temp
     read(15,*)temp
     read(15,*)P%degreePolyScheme
-    read(15,*)temp
     read(15,*)P%etaRelax
     read(15,*)temp
     read(15,*)P%shouldSaveAll
@@ -90,8 +90,9 @@ contains
     !------------------------------------------!
     open(unit=16,file='PARAMETER_init.txt',status='old')
 
-    read(16,*)temp
-    read(16,*)temp
+    Do i=1,4
+       read(16,*)temp
+    End Do
     read(16,*)Pinit%choiceInit
     read(16,*)temp
     !- 1) Random

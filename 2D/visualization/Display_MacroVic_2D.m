@@ -5,7 +5,7 @@
 %%
 
 %% Parameters visualisation
-lengthArrow = 5;		# the arrows
+lengthArrow = 5;		% the arrows
 headSize    = .1;
 
 shouldPlotEnd = 1;
@@ -21,18 +21,17 @@ z_max = 2;
 %%----------------------------------------------------------%%
 fid = fopen('../bin/PARAMETER_2D.txt');
 C   = textscan(fid, '%s','delimiter', '\n');
-Lx   = str2num(C{1}{11});
-Ly   = str2num(C{1}{12});
-dx   = str2num(C{1}{13});
-dy   = str2num(C{1}{14});
-Time = str2num(C{1}{16});
-dt   = str2num(C{1}{17});
+Lx   = str2num(C{1}{9});
+Ly   = str2num(C{1}{10});
+dx   = str2num(C{1}{11});
+dy   = str2num(C{1}{12});
+Time = str2num(C{1}{14});
+dt   = str2num(C{1}{15});
 fclose(fid);
 
 nCellx = floor(Lx/dx+.5);
 nCelly = floor(Ly/dy+.5);
 dxy = min(dx,dy);
-
 
 
 %%------------------ 0.2) Initialisation ------------------%%

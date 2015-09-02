@@ -1,9 +1,7 @@
-######   Parameters of the model   ######
-## model : c1, c2, c3
-#   d=.2            d=1
-# c1 = .893383    c1 = .446390
-# c2 = .694589    c2 = .186767
-# c3 = .200000    c3 = 1.00000
+##--------------------------------------------##
+##         Parameters for Macro Vicsek        ##
+##--------------------------------------------##
+## coeff model : c1, c2, λ
 0.893383
 0.694589
 0.200000
@@ -15,14 +13,29 @@
 ## Time , dt
 100
 .2
-## boundCondX boundCondY (1:periodic, 2:Neumann homogenous, 3:vortex)
+## Boundary condition (x and y)
+##   1:periodic, 2:Neumann homogenous, 3:vortex
 1
 2
-######  Parameters numerical scheme  ######
-## conservation law: degree polynomial scheme (≥3 then exact)
+##-----  Parameters numerical scheme  -----##
+## degree polynomial scheme (≥3 then exact), η relaxation (η=0 default)
 3
-## relaxation: η
 0
-## shouldSaveAll, VTK or Octave
+## saving: shouldSaveAll, isFormatVtk
 T
 F
+
+
+##--------------------------------------------##
+##-----            Remarks        ------------##
+##--------------------------------------------##
+## example coeff
+##  d=.2
+c1 = .893383
+c2 = .694589
+λ  = .200000
+##  d=1
+c1 = .446390 
+c2 = .186767 
+λ  = 1.00000 
+

@@ -1,4 +1,6 @@
-######  Initial condition for the Macroscopic Vicsek model  ######
+##-----------------------------------------------##
+##      Initial condition for Macro Vicsek 2D    ##
+##-----------------------------------------------##
 ## ChoiceInit ##
 1
 ##------------##
